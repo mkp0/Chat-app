@@ -1,7 +1,8 @@
-const socket = io("http://localhost:3000");
+const socket = io();
 const messageContainer = document.getElementById("message-container");
 const messageForm = document.getElementById("send-container");
 const messageInput = document.getElementById("message-input");
+const noofUsers = document.getElementById("noofusers");
 
 const name = prompt("What is your name?");
 appendMessage("You joined");
@@ -11,12 +12,19 @@ socket.on("chat-message", (data) => {
   appendMessage(`${data.name}: ${data.message}`);
 });
 
-socket.on("user-connected", (name) => {
-  appendMessage(`${name} connected`);
+socket.on("user-connected", (val) => {
+  appendMessage(`${val.name} connected`);
+  noofUsers.innerHTML = val.len;
 });
 
-socket.on("user-disconnected", (name) => {
-  appendMessage(`${name} disconnected`);
+socket.on("user-disconnected", (val) => {
+  console.log(val);
+  appendMessage(`${val.name} disconnected`);
+  noofUsers.innerHTML = val.len;
+});
+
+socket.on("online-user", (val) => {
+  noofUsers.innerHTML = val;
 });
 
 messageForm.addEventListener("submit", (e) => {
